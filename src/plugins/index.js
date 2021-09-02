@@ -3,22 +3,22 @@ import fastifyPlugin from "fastify-plugin";
 import fastifyOas from "fastify-oas";
 import fastifySensible from "fastify-sensible";
 import fastifyFormbody from "fastify-formbody";
-import mongoose from "./db";
+import database from "~/plugins/database";
+import helper from "~/plugins/helper";
 import config from "~/config";
-
-/**
- * Get config values
- * */
-const { database, rateLimiter, documentation, server } = config;
 
 /**
  * Define database plugin
  * */
 const plugin = async (app, options, next) => {
 	/**
+	 * Server helper plugins
+	 * */
+	await app.register(helper);
+	/**
 	 * Mongoose connection
 	 * */
-	await app.register(mongoose, database);
+	await app.register(database, config.database);
 
 	/**
 	 * Exception handler
@@ -36,20 +36,20 @@ const plugin = async (app, options, next) => {
 	 * Rate limiter
 	 * DOC: https://github.com/fastify/fastify-rate-limit
 	 * */
-	await app.register(fastifyRateLimit, rateLimiter);
+	await app.register(fastifyRateLimit, config.rateLimiter);
 
 	/**
 	 * Swagger documentation
 	 * DOC: https://github.com/SkeLLLa/fastify-oas
 	 * */
-	await app.register(fastifyOas, documentation);
+	await app.register(fastifyOas, config.documentation);
 
 	/**
 	 * Instance Ready
 	 * */
 	app.addHook("onReady", (done) => {
-		console.log(app.printRoutes());
-		console.log(`Listening at http://localhost:${server.port}`);
+		// Print routes in development
+		app.isDev && console.log(app.printRoutes());
 		const err = null;
 		done(err);
 	});

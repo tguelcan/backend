@@ -3,7 +3,8 @@ import path from "path";
 /**
  * Get env variables
  * */
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, MONGO_URI = "mongodb://localhost:27017/myapp" } =
+    process.env;
 
 export default {
     instance: {
@@ -13,11 +14,11 @@ export default {
         port: PORT,
     },
     router: {
-        dir: path.join(__dirname, "api"),
+        dir: path.join(__dirname, "../api"),
         options: { prefix: "/api" },
     },
     database: {
-        uri: process.env.MONGO_URI || "mongodb://localhost:27017/myapp",
+        uri: MONGO_URI,
         options: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
@@ -29,6 +30,8 @@ export default {
     },
     documentation: {
         routePrefix: "/documentation",
+        host: "localhost",
+
         swagger: {
             info: {
                 title: "Test openapi",
@@ -39,8 +42,8 @@ export default {
                 url: "https://swagger.io",
                 description: "Find more info here",
             },
-            consumes: ["application/json"],
-            produces: ["application/json"],
+            consumes: ["application/x-www-form-urlencoded"],
+            produces: ["application/x-www-form-urlencoded"],
         },
         exposeRoute: true,
     },
