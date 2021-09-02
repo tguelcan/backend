@@ -1710,6 +1710,11 @@ fast-json-stringify@^2.5.2:
     rfdc "^1.2.0"
     string-similarity "^4.0.1"
 
+fast-rbac@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/fast-rbac/-/fast-rbac-2.0.0.tgz#1127052d237c42f33b0a845696453655b4fcc7fb"
+  integrity sha512-wZUVfqFumZYInbXKEluOLOqLKLKwiCT5TG+te14vnm4brt3Uw30p3omjtHtE4Wt9QkUvYgHYG1Ryw2k7REw49Q==
+
 fast-redact@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/fast-redact/-/fast-redact-3.0.2.tgz#c940ba7162dde3aeeefc522926ae8c5231412904"

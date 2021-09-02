@@ -19,6 +19,7 @@
     "@babel/register": "^7.13.16",
     "@babel/runtime": "^7.14.0",
     "babel-plugin-root-import": "^6.6.0",
+    "fast-rbac": "^2.0.0",
     "fastify": "^3.20.2",
     "fastify-autoload": "^3.8.1",
     "fastify-formbody": "^5.1.0",

@@ -1,6 +1,10 @@
 import { getAll, getOne, createOne } from "./controller";
+import RBAC from "./rbac";
 
 export default async function (app, opts) {
+	// Initialize role based access control
+	const accessControl = RBAC(app);
+
 	app.route({
 		url: "/",
 		method: ["GET"],
@@ -22,7 +26,7 @@ export default async function (app, opts) {
 			},
 		},
 		*/
-		handler: getAll(app),
+		handler: getAll(app, accessControl),
 	});
 
 	app.route({

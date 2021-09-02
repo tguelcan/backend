@@ -5,6 +5,7 @@ import fastifySensible from "fastify-sensible";
 import fastifyFormbody from "fastify-formbody";
 import database from "~/plugins/database";
 import helper from "~/plugins/helper";
+import rbac from "~/plugins/rbac";
 import config from "~/config";
 
 /**
@@ -19,6 +20,12 @@ const plugin = async (app, options, next) => {
 	 * Mongoose connection
 	 * */
 	await app.register(database, config.database);
+
+	/**
+	 * RBAC Plugin
+	 * DOC: https://github.com/SkeLLLa/fast-rbac#docs
+	 * */
+	await app.register(rbac);
 
 	/**
 	 * Exception handler
