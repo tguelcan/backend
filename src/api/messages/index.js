@@ -1,4 +1,4 @@
-import { getAll, getOne } from "./controller";
+import { getAll, getOne, createOne } from "./controller";
 
 export default async function (app, opts) {
 	app.route({
@@ -22,11 +22,17 @@ export default async function (app, opts) {
 			},
 		},
 		*/
-		handler: getAll,
+		handler: getAll(app),
 	});
 
 	app.route({
-		url: "/:id",
+		url: "/",
+		method: ["POST"],
+		handler: createOne(app),
+	});
+
+	app.route({
+		url: "/:_id",
 		method: ["GET"],
 		/*
 		schema: {
