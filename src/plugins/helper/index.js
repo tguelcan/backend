@@ -3,13 +3,13 @@ import fp from "fastify-plugin";
 /**
  * Define Server Plugin
  * */
-const plugin = async (fastify, { uri, options }, next) => {
+const plugin = async (server, { uri, options }, next) => {
 	// Get node env
 	const { NODE_ENV = "development" } = process.env;
 	// Server Helper
-	fastify.decorate("isDev", NODE_ENV === "development");
-	fastify.decorate("isProd", NODE_ENV === "production");
-	fastify.decorate("isTest", NODE_ENV === "test");
+	server.decorate("isDev", NODE_ENV === "development");
+	server.decorate("isProd", NODE_ENV === "production");
+	server.decorate("isTest", NODE_ENV === "test");
 	next();
 };
 

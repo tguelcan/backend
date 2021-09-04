@@ -7,7 +7,7 @@ export default (app) =>
 		roles: {
 			guest: { can: ["*:read"] },
 			user: {
-				can: ["message:create"],
+				can: ["post:create"],
 				inherits: ["guest"],
 			},
 			admin: { can: ["*"] },

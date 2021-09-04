@@ -14,11 +14,11 @@ const connect = (url, options) =>
 /**
  * Define Database Plugin
  * */
-const plugin = async (fastify, { uri, options }, next) => {
+const plugin = async (server, { uri, options }, next) => {
 	const instance = await connect(uri, options);
 
 	// Assign mongoose instance to fastify
-	fastify
+	server
 		.decorate("mongoose", instance)
 		.addHook("onClose", () => instance.connection.close());
 	next();

@@ -6,57 +6,63 @@ import fastifyFormbody from "fastify-formbody";
 import database from "~/plugins/database";
 import helper from "~/plugins/helper";
 import rbac from "~/plugins/rbac";
+import auth from "~/plugins/auth";
 import config from "~/config";
 
 /**
  * Define database plugin
  * */
-const plugin = async (app, options, next) => {
+const plugin = async (server, options, next) => {
 	/**
 	 * Server helper plugins
 	 * */
-	await app.register(helper);
+	await server.register(helper);
 	/**
 	 * Mongoose connection
 	 * */
-	await app.register(database, config.database);
+	await server.register(database, config.database);
 
 	/**
 	 * RBAC Plugin
 	 * DOC: https://github.com/SkeLLLa/fast-rbac#docs
 	 * */
-	await app.register(rbac);
+	await server.register(rbac);
+
+	/**
+	 * Auth Plugin
+	 * */
+	await server.register(auth);
 
 	/**
 	 * Exception handler
 	 * DOC: https://github.com/fastify/fastify-sensible
 	 * */
-	await app.register(fastifySensible);
+	await server.register(fastifySensible);
 
 	/**
 	 * Accept content type parser for body
 	 * DOC: https://github.com/fastify/fastify-formbody
 	 * */
-	await app.register(fastifyFormbody);
+	await server.register(fastifyFormbody);
 
 	/**
 	 * Rate limiter
 	 * DOC: https://github.com/fastify/fastify-rate-limit
 	 * */
-	await app.register(fastifyRateLimit, config.rateLimiter);
+	await server.register(fastifyRateLimit, config.rateLimiter);
 
 	/**
 	 * Swagger documentation
 	 * DOC: https://github.com/SkeLLLa/fastify-oas
 	 * */
-	await app.register(fastifyOas, config.documentation);
+	await server.register(fastifyOas, config.documentation);
 
 	/**
 	 * Instance Ready
 	 * */
-	app.addHook("onReady", (done) => {
+	server.addHook("onReady", (done) => {
 		// Print routes in development
-		app.isDev && console.log(app.printRoutes());
+		server.isDev && console.log(server.printRoutes());
 		const err = null;
 		done(err);
 	});

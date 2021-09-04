@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 /**
  * Mongoose Schema
  * */
-const messageSchema = new mongoose.Schema(
+const Schema = new mongoose.Schema(
     {
         content: {
             type: String,
@@ -15,4 +15,4 @@ const messageSchema = new mongoose.Schema(
     }
 );
 
-export default mongoose.model("Message", messageSchema);
+export default mongoose.model("Post", Schema);

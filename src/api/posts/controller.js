@@ -1,7 +1,6 @@
 import model from "./model";
 
-export const getAll = (app, acl) => async (request, reply) => {
-	app.assert(await acl.can("guest", "message", "read"), 401);
+export const getAll = (app) => async (request, reply) => {
 	return await model.find();
 };
 
