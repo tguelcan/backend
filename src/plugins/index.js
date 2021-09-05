@@ -3,6 +3,7 @@ import fastifyPlugin from "fastify-plugin";
 import fastifyOas from "fastify-oas";
 import fastifySensible from "fastify-sensible";
 import fastifyFormbody from "fastify-formbody";
+import fastifyHelmet from "fastify-helmet";
 import database from "~/plugins/database";
 import helper from "~/plugins/helper";
 import rbac from "~/plugins/rbac";
@@ -17,6 +18,12 @@ const plugin = async (server, options, next) => {
 	 * Server helper plugins
 	 * */
 	await server.register(helper);
+
+	/**
+	 * Helmet security plugin
+	 * DOC: https://github.com/fastify/fastify-helmet
+	 * */
+	await server.register(fastifyHelmet);
 	/**
 	 * Mongoose connection
 	 * */

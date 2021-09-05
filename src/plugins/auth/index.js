@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import fp from "fastify-plugin";
-import session from "fastify-secure-session";
+import jwt from "jsonwebtoken";
 import auth from "./provider";
 
 import config from "~/config";
@@ -20,21 +20,27 @@ const {
  * Define Auth Plugin
  * */
 const plugin = async (server, options, next) => {
-	server.register(session, {
-		key: fs.readFileSync(path.join(__dirname, "secret-key")),
-	});
 	// Route
-
 	server.route({
 		url: `${prefix}/auth/:provider`,
 		method: ["GET"],
-		handler: async ({ query: { accessToken }, params: { provider } }) => {
-			console.log(provider);
-			const data = await auth[provider](accessToken);
-
-			console.log(data);
-
-			return data;
+		handler: async (
+			{ query: { accessToken }, params: { provider } },
+			reply
+		) => {
+			try {
+				const data = await auth[provider](accessToken);
+				const token = await jwt.sign(
+					{ id: data.id, role: "guest" },
+					"shhhhh"
+				);
+				return {
+					token,
+					data,
+				};
+			} catch (error) {
+				reply.unauthorized(error.message);
+			}
 		},
 		schema: {
 			query: {
