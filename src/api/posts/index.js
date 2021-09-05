@@ -1,4 +1,4 @@
-import { getAll, getOne, createOne } from "./controller";
+import { find, findOne, createOne } from "./controller";
 import RBAC from "./rbac";
 
 export default async function (app, opts) {
@@ -8,10 +8,10 @@ export default async function (app, opts) {
 	app.route({
 		url: "/",
 		method: ["GET"],
-		preHandler: async (request) =>
-			// todo: request.user.role ?
-			await app.assert(acl.can("guest", "post", "read"), 401),
-		handler: getAll(app),
+		preValidation: [app.authenticate],
+		preHandler: async ({ user: { role } }) =>
+			await app.assert(acl.can(role, "post", "find"), 401),
+		handler: find(app),
 	});
 
 	app.route({
@@ -39,6 +39,9 @@ export default async function (app, opts) {
 	app.route({
 		url: "/:_id",
 		method: ["GET"],
-		handler: getOne(app),
+		handler: findOne(app),
+		preValidation: [app.authenticate],
+		preHandler: async ({ user: { role } }) =>
+			await app.assert(acl.can(role, "post", "findOne"), 401),
 	});
 }

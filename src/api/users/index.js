@@ -1,4 +1,4 @@
-import { getAll, getOne, createOne } from "./controller";
+import { find } from "./controller";
 import RBAC from "./rbac";
 
 export default async function (app, opts) {
@@ -11,6 +11,6 @@ export default async function (app, opts) {
 		preHandler: async (request) =>
 			// todo: request.user.role ?
 			await app.assert(acl.can("guest", "user", "read"), 401),
-		handler: getAll(app),
+		handler: find(app),
 	});
 }

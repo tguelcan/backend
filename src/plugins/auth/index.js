@@ -2,26 +2,29 @@
 import fs from "fs";
 import path from "path";
 import fp from "fastify-plugin";
-import jwt from "jsonwebtoken";
+import fastifyJwt from "fastify-jwt";
 import auth from "./provider";
+import User from "~/api/users/model";
 
-import config from "~/config";
+import { router, jwt } from "~/config";
 
 /**
  * Get router prefix
  * */
 const {
-	router: {
-		options: { prefix },
-	},
-} = config;
+	options: { prefix },
+} = router;
 
 /**
  * Define Auth Plugin
+ * @param {app} app instance
+ * @param {options} options of app instance
+ * @param {next} pass next function
  * */
-const plugin = async (server, options, next) => {
+const plugin = async (app, options, next) => {
+	app.register(fastifyJwt, { secret: jwt.secret, ...jwt.options });
 	// Route
-	server.route({
+	app.route({
 		url: `${prefix}/auth/:provider`,
 		method: ["GET"],
 		handler: async (
@@ -29,14 +32,14 @@ const plugin = async (server, options, next) => {
 			reply
 		) => {
 			try {
-				const data = await auth[provider](accessToken);
-				const token = await jwt.sign(
-					{ id: data.id, role: "guest" },
-					"shhhhh"
+				const providerUser = await auth[provider](accessToken);
+				const { _id, role } = await User.createFromService(
+					providerUser
 				);
+				const token = await app.jwt.sign({ _id, role });
 				return {
 					token,
-					data,
+					data: providerUser,
 				};
 			} catch (error) {
 				reply.unauthorized(error.message);

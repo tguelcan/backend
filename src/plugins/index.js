@@ -4,72 +4,76 @@ import fastifyOas from "fastify-oas";
 import fastifySensible from "fastify-sensible";
 import fastifyFormbody from "fastify-formbody";
 import fastifyHelmet from "fastify-helmet";
-import database from "~/plugins/database";
+import db from "~/plugins/database";
 import helper from "~/plugins/helper";
 import rbac from "~/plugins/rbac";
 import auth from "~/plugins/auth";
-import config from "~/config";
+import { database, rateLimiter, documentation } from "~/config";
 
 /**
  * Define database plugin
+ * @param {app} app instance
+ * @param {options} app options
+ * @param {next} next pass
  * */
-const plugin = async (server, options, next) => {
+const plugin = async (app, options, next) => {
 	/**
-	 * Server helper plugins
+	 * App helper plugins
 	 * */
-	await server.register(helper);
+	await app.register(helper);
 
 	/**
 	 * Helmet security plugin
 	 * DOC: https://github.com/fastify/fastify-helmet
 	 * */
-	await server.register(fastifyHelmet);
+	await app.register(fastifyHelmet);
 	/**
 	 * Mongoose connection
 	 * */
-	await server.register(database, config.database);
+	await app.register(db, database);
 
 	/**
 	 * RBAC Plugin
 	 * DOC: https://github.com/SkeLLLa/fast-rbac#docs
 	 * */
-	await server.register(rbac);
+	await app.register(rbac);
 
 	/**
 	 * Auth Plugin
 	 * */
-	await server.register(auth);
+	await app.register(auth);
 
 	/**
 	 * Exception handler
 	 * DOC: https://github.com/fastify/fastify-sensible
 	 * */
-	await server.register(fastifySensible);
+	await app.register(fastifySensible);
 
 	/**
 	 * Accept content type parser for body
 	 * DOC: https://github.com/fastify/fastify-formbody
 	 * */
-	await server.register(fastifyFormbody);
+	await app.register(fastifyFormbody);
 
 	/**
 	 * Rate limiter
 	 * DOC: https://github.com/fastify/fastify-rate-limit
 	 * */
-	await server.register(fastifyRateLimit, config.rateLimiter);
+	await app.register(fastifyRateLimit, rateLimiter);
 
 	/**
 	 * Swagger documentation
 	 * DOC: https://github.com/SkeLLLa/fastify-oas
 	 * */
-	await server.register(fastifyOas, config.documentation);
+	await app.register(fastifyOas, documentation);
 
 	/**
 	 * Instance Ready
+	 * @param {done} hook function
 	 * */
-	server.addHook("onReady", (done) => {
+	app.addHook("onReady", (done) => {
 		// Print routes in development
-		server.isDev && console.log(server.printRoutes());
+		app.isDev && console.log(app.printRoutes());
 		const err = null;
 		done(err);
 	});

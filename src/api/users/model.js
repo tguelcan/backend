@@ -13,13 +13,21 @@ const Schema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        service: {
-            type: String,
-            required: true,
+        services: {
+            google: {
+                type: String,
+            },
+            microsoft: {
+                type: String,
+            },
         },
         picture: {
             type: String,
-            required: true,
+            required: false,
+        },
+        role: {
+            type: String,
+            default: "user",
         },
     },
     {

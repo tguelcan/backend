@@ -1,15 +1,33 @@
 /**
  * Roles
+ * @param {app} app instance
  * */
-
 export default (app) =>
 	new app.RBAC({
 		roles: {
-			guest: { can: ["*:read"] },
+			guest: {
+				can: ["post:find"],
+			},
 			user: {
-				can: ["post:create"],
+				can: [
+					"post:findOne",
+					"post:create",
+					{
+						name: "post:update",
+						when: ({ document: { author }, credentials }, done) =>
+							done(null, author._id.equals(credentials._id)),
+					},
+					{
+						name: "post:delete",
+						when: ({ document: { author }, credentials }, done) =>
+							done(null, author._id.equals(credentials._id)),
+					},
+				],
 				inherits: ["guest"],
 			},
-			admin: { can: ["*"] },
+			admin: {
+				can: ["post:*"],
+				inherits: ["user"],
+			},
 		},
 	});

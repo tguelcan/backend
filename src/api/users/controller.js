@@ -1,5 +1,5 @@
 import model from "./model";
 
-export const getAll = (app) => async (request, reply) => {
+export const find = (app) => async (request, reply) => {
 	return await model.find();
 };

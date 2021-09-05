@@ -1,26 +1,36 @@
 import fp from "fastify-plugin";
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
+import { pagination } from "~/config";
 
 /**
  * Create Mongoose connection
+ * @param {uri} mongodb uri
+ * @param {options} mongodb options
+ * @return promise mongodb connection
  * */
-const connect = (url, options) =>
+const connect = (uri, options) =>
 	new Promise((resolve, reject) => {
-		mongoose.connect(url, options, (error) =>
+		mongoose.connect(uri, options, (error) =>
 			error ? reject(error) : resolve(mongoose)
 		);
+		mongoosePaginate.paginate.options = pagination;
+		mongoose.plugin(mongoosePaginate);
 	});
 
 /**
- * Define Database Plugin
+ * Define plugin
+ * @param {app} app instance
+ * @param {uri, options} mongodb options
+ * @param {next} next function
  * */
-const plugin = async (server, { uri, options }, next) => {
+const plugin = async (app, { uri, options }, next) => {
 	const instance = await connect(uri, options);
 
 	// Assign mongoose instance to fastify
-	server
-		.decorate("mongoose", instance)
-		.addHook("onClose", () => instance.connection.close());
+	app.decorate("mongoose", instance).addHook("onClose", () =>
+		instance.connection.close()
+	);
 	next();
 };
 

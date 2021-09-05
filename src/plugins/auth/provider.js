@@ -3,6 +3,8 @@ import got from "got";
 const provider = {
 	/**
 	 * Google graph login provider
+	 * @param {access_token} google user access_token
+	 * @return {id, service, displayName, email, picture} user informations
 	 * */
 	google: async (access_token) => {
 		const { id, name, email, picture } = await got(
@@ -23,6 +25,8 @@ const provider = {
 	},
 	/**
 	 * Microsoft graph login provider
+	 * @param {access_token} microsoft user from active directory access_token
+	 * @return {id, service, displayName, email, picture} user informations
 	 * */
 	microsoft: async (access_token) => {
 		const { id, displayName, mail, userPrincipalName } = await got(
