@@ -5,6 +5,7 @@ import fp from "fastify-plugin";
 import fastifyJwt from "fastify-jwt";
 import auth from "./provider";
 import User from "~/api/users/model";
+import rbac from "./rbac";
 
 import { router, jwt } from "~/config";
 
@@ -22,6 +23,7 @@ const {
  * @param {next} pass next function
  * */
 const plugin = async (app, options, next) => {
+	app.register(rbac);
 	app.register(fastifyJwt, { secret: jwt.secret, ...jwt.options });
 	// Route
 	app.route({

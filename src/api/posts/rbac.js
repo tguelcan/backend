@@ -11,14 +11,14 @@ export default (app) =>
 			user: {
 				can: [
 					"post:findOne",
-					"post:create",
+					"post:createOne",
 					{
-						name: "post:update",
+						name: "post:updateOne",
 						when: ({ document: { author }, credentials }, done) =>
 							done(null, author._id.equals(credentials._id)),
 					},
 					{
-						name: "post:delete",
+						name: "post:deleteOne",
 						when: ({ document: { author }, credentials }, done) =>
 							done(null, author._id.equals(credentials._id)),
 					},

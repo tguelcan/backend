@@ -43,18 +43,26 @@ const plugin = async (server, { uri, options }, next) => {
 	server.decorate("isDev", NODE_ENV === "development");
 	server.decorate("isProd", NODE_ENV === "production");
 	server.decorate("isTest", NODE_ENV === "test");
-	// Flat pick
-	server.decorate("flatPick", flatPick);
+
 	// Check if document is mine with app or server.isMine(doc, user)
 	server.decorate("isMine", (doc, { _id }) => doc._id.equals(_id));
-	// JWT Authentication helper
-	server.decorate("authenticate", async function (request, reply) {
-		try {
-			await request.jwtVerify();
-		} catch (err) {
-			reply.send(err);
-		}
-	});
+
+	// Flat pick
+	server.decorate("flatPick", flatPick);
+	server.decorate(
+		"pick",
+		(select) => async (request, reply, payload, done) =>
+			flatPick(payload, select)
+	);
+
+	// Throw if empty helper
+	server.decorate(
+		"throwIfEmpty",
+		(status = 404) =>
+			async (request, reply, payload, done) =>
+				server.assert(payload, status)
+	);
+
 	next();
 };
 

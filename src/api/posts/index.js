@@ -1,23 +1,26 @@
 import { find, findOne, createOne } from "./controller";
-import RBAC from "./rbac";
+import rbac from "./rbac";
 
 export default async function (app, opts) {
-	// Initialize role based access control
-	const acl = RBAC(app);
-
 	app.route({
 		url: "/",
 		method: ["GET"],
-		preValidation: [app.authenticate],
-		preHandler: async ({ user: { role } }) =>
-			await app.assert(acl.can(role, "post", "find"), 401),
-		handler: find(app),
+		preValidation: [app.authenticate(rbac, "find", "post")],
+		handler: find,
 	});
 
 	app.route({
 		url: "/",
 		method: ["POST"],
-		handler: createOne(app),
+		preValidation: [
+			app.authenticate(rbac, "createOne", "post"),
+			app.addAuthor(),
+		],
+		handler: createOne,
+		preSerialization: [
+			app.populate(),
+			app.pick(["_id", "content", "author"]),
+		],
 		schema: {
 			body: {
 				type: "object",
@@ -39,9 +42,22 @@ export default async function (app, opts) {
 	app.route({
 		url: "/:_id",
 		method: ["GET"],
-		handler: findOne(app),
-		preValidation: [app.authenticate],
-		preHandler: async ({ user: { role } }) =>
-			await app.assert(acl.can(role, "post", "findOne"), 401),
+		preValidation: [app.authenticate(rbac, "findOne", "post")],
+		handler: findOne,
+		preSerialization: [
+			app.throwIfEmpty(),
+			app.populate(),
+			app.pick(["content", "author"]),
+		],
 	});
 }
+/*
+preSerialization: async (request, reply, payload, done) => {
+			await payload.populate({
+				path: "author",
+				select: "displayName picture",
+			});
+			// return await app.flatPick(payload, ["_id", "author", "content"]);
+			return payload;
+		},
+*/
