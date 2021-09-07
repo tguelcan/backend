@@ -47,8 +47,7 @@ const plugin = async (server, { uri, options }, next) => {
 	// Check if document is mine with app or server.isMine(doc, user)
 	server.decorate("isMine", (doc, { _id }) => doc._id.equals(_id));
 
-	// Flat pick
-	server.decorate("flatPick", flatPick);
+	// Flat pick decorator
 	server.decorate(
 		"pick",
 		(select) => async (request, reply, payload, done) =>

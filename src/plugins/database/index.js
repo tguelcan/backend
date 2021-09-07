@@ -25,6 +25,10 @@ const connect = (uri, options) =>
  * @param {next} next function
  * */
 const plugin = async (app, { uri, options }, next) => {
+	// Skip connection, if test runs
+	if (app.isTest) {
+		return next();
+	}
 	const instance = await connect(uri, options);
 
 	// Assign mongoose instance to fastify

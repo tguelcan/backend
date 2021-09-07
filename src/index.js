@@ -1,17 +1,17 @@
 import fastify from "fastify";
-import autoload from "fastify-autoload";
 import plugins from "~/plugins";
-import config from "~/config";
+import { instance, server, env } from "~/config";
 
 /**
  * Define fastify instance
  * */
-const app = fastify(config.instance);
+const app = fastify(instance);
 
 /**
  * Backend core function
+ * @export for test
  * */
-const start = async () => {
+export const serve = async () => {
     try {
         /**
          * Register Plugins
@@ -19,14 +19,11 @@ const start = async () => {
         await app.register(plugins);
 
         /**
-         * Register Routes
-         * */
-        await app.register(autoload, config.router);
-
-        /**
          * Start Server and log informations
          * */
-        await app.listen(config.server.port);
+        app.isTest || (await app.listen(server.port));
+
+        return app;
     } catch (error) {
         app.log.error(error);
         process.exit(1);
@@ -34,4 +31,6 @@ const start = async () => {
 };
 
 // Run server
-start();
+if (env !== "test") {
+    serve();
+}

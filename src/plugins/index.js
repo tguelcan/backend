@@ -3,12 +3,13 @@ import fastifyPlugin from "fastify-plugin";
 import fastifyOas from "fastify-oas";
 import fastifySensible from "fastify-sensible";
 import fastifyFormbody from "fastify-formbody";
+import fastifyAutoload from "fastify-autoload";
 import fastifyHelmet from "fastify-helmet";
 import db from "~/plugins/database";
 import helper from "~/plugins/helper";
 import rbac from "~/plugins/rbac";
 import auth from "~/plugins/auth";
-import { database, rateLimiter, documentation } from "~/config";
+import { database, rateLimiter, documentation, router } from "~/config";
 
 /**
  * Define database plugin
@@ -27,6 +28,7 @@ const plugin = async (app, options, next) => {
 	 * DOC: https://github.com/fastify/fastify-helmet
 	 * */
 	await app.register(fastifyHelmet);
+
 	/**
 	 * Mongoose connection
 	 * */
@@ -66,6 +68,12 @@ const plugin = async (app, options, next) => {
 	 * DOC: https://github.com/SkeLLLa/fastify-oas
 	 * */
 	await app.register(fastifyOas, documentation);
+
+	/**
+	 * Register Routes
+	 * DOC: https://github.com/fastify/fastify-autoload
+	 * */
+	await app.register(fastifyAutoload, router);
 
 	/**
 	 * Instance Ready

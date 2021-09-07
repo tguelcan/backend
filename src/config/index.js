@@ -7,10 +7,12 @@ const {
     PORT = 3000,
     MONGO_URI = "mongodb://localhost:27017/myapp",
     JWT_SECRET,
+    NODE_ENV,
 } = process.env;
 
 const config = {
     all: {
+        env: NODE_ENV,
         instance: {
             logger: true,
         },
