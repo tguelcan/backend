@@ -1,7 +1,6 @@
 import fp from "fastify-plugin";
 import mongoose from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2";
-import { pagination } from "~/config";
+import plugins from "./plugins";
 
 /**
  * Create Mongoose connection
@@ -14,8 +13,6 @@ const connect = (uri, options) =>
 		mongoose.connect(uri, options, (error) =>
 			error ? reject(error) : resolve(mongoose)
 		);
-		mongoosePaginate.paginate.options = pagination;
-		mongoose.plugin(mongoosePaginate);
 	});
 
 /**
@@ -25,16 +22,15 @@ const connect = (uri, options) =>
  * @param {next} next function
  * */
 const plugin = async (app, { uri, options }, next) => {
-	// Skip connection, if test runs
-	if (app.isTest) {
-		return next();
-	}
-	const instance = await connect(uri, options);
-
+	// Add mongodb plugins
+	const mongooseInstance = await plugins(mongoose);
 	// Assign mongoose instance to fastify
-	app.decorate("mongoose", instance).addHook("onClose", () =>
-		instance.connection.close()
-	);
+	await app.decorate("mongoose", mongooseInstance);
+	// Connect if not test env
+	if (!app.isTest) {
+		await connect(uri, options);
+	}
+
 	next();
 };
 

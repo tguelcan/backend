@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node .",
-    "test": "ava",
+    "test": "ava --verbose",
     "dev": "nodemon src/ --exec \"node --require dotenv/config --require @babel/register\"",
     "prod": "NODE_ENV=production babel-node --presets @babel/env src/",
     "lint": "eslint src"

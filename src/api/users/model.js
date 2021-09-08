@@ -46,10 +46,6 @@ Schema.statics.createFromService = async function ({
     const user = await this.findOne({
         $or: [{ [`services.${service}`]: id }, { email }],
     });
-    console.log("service");
-    console.log(service);
-    console.log("user");
-    console.log(user);
     if (user) {
         user.services[service] = id;
         // user.username = displayName

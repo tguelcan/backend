@@ -30,7 +30,6 @@ export const createUsers = async (t) => {
 		_id: user1._id,
 		role: user1.role,
 	});
-	console.log(token);
 	// Bind Users
 	t.context.users = {
 		user1: {

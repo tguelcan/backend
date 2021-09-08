@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 import { MongoMemoryServer } from "mongodb-memory-server";
 
 // Your server
@@ -12,7 +10,7 @@ export const prepareServer = async (t) => {
     // Connect Database
     const mongod = await MongoMemoryServer.create();
     const uri = mongod.getUri();
-    // Bind
-    t.context.mongoConnection = await mongoose.connect(uri);
+    // Bind to context
+    t.context.mongoConnection = await server.mongoose.connect(uri);
     t.context.server = server;
 };
