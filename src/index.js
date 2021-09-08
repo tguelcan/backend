@@ -9,9 +9,8 @@ const app = fastify(instance);
 
 /**
  * Backend core function
- * @export for test
  * */
-export const serve = async () => {
+(async () => {
     try {
         /**
          * Register Plugins
@@ -22,15 +21,13 @@ export const serve = async () => {
          * Start Server and log informations
          * */
         app.isTest || (await app.listen(server.port));
-
-        return app;
     } catch (error) {
         app.log.error(error);
         process.exit(1);
     }
-};
+})();
 
-// Run server
-if (env !== "test") {
-    serve();
-}
+/**
+ * @export for test
+ * */
+export default app;

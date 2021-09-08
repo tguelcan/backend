@@ -13,9 +13,6 @@ const {
 const config = {
     all: {
         env: NODE_ENV,
-        instance: {
-            logger: true,
-        },
         server: {
             port: PORT,
         },
@@ -70,9 +67,20 @@ const config = {
             },
             exposeRoute: true,
         },
-        test: {},
-        development: {},
+        test: {
+            instance: {
+                logger: true,
+            },
+        },
+        development: {
+            instance: {
+                logger: true,
+            },
+        },
         production: {
+            instance: {
+                logger: true,
+            },
             rateLimiter: {
                 max: 100,
                 timeWindow: "1 minute",

@@ -41,7 +41,7 @@ const plugin = async (app, options, next) => {
 				const token = await app.jwt.sign({ _id, role });
 				return {
 					token,
-					data: providerUser,
+					...providerUser,
 				};
 			} catch (error) {
 				reply.unauthorized(error.message);
