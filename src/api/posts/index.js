@@ -47,7 +47,7 @@ export default async function (app, opts) {
 		preSerialization: [
 			app.throwIfEmpty(),
 			app.populate(),
-			app.pick(["content", "author"]),
+			app.pick(["_id", "content", "author"]),
 		],
 	});
 }

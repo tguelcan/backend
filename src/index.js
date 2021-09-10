@@ -4,11 +4,13 @@ import { instance, server, env } from "~/config";
 
 /**
  * Define fastify instance
+ * load settings (instance) from config
  * */
 const app = fastify(instance);
 
 /**
  * Backend core function
+ * Self executing function
  * */
 (async () => {
     try {
@@ -19,6 +21,7 @@ const app = fastify(instance);
 
         /**
          * Start Server and log informations
+         * (if not in test env)
          * */
         app.isTest || (await app.listen(server.port));
     } catch (error) {

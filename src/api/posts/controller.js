@@ -2,9 +2,7 @@ import model from "./model";
 
 export const find = async ({ query }, reply) =>
 	await model.paginate(
-		{
-			// Filter here
-		},
+		{},
 		{
 			...query,
 			// select: 'content author',

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 /**
  * Mongoose Schema
+ * DOC: https://mongoosejs.com/docs/guide.html
  * */
 const Schema = new mongoose.Schema(
     {
@@ -35,6 +36,10 @@ const Schema = new mongoose.Schema(
     }
 );
 
+/**
+ * Mongoose Statics
+ * DOC: https://mongoosejs.com/docs/guide.html#statics
+ * */
 Schema.statics.createFromService = async function ({
     service,
     id,

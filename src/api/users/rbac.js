@@ -1,7 +1,7 @@
 /**
  * Roles
+ * @param {app} app instance
  * */
-
 export default (app) =>
 	new app.RBAC({
 		roles: {

@@ -6,6 +6,7 @@ test.before(prepareServer);
 test.before(createUsers);
 
 const endpoint = "/posts";
+let onePost;
 
 // GET 401
 test.serial(`GET ${endpoint} | 401`, async (t) => {
@@ -128,4 +129,26 @@ test.serial(`GET ${endpoint} | 200 | With Entry`, async (t) => {
   );
 
   t.is(JSON.parse(body).rows.length, 1, "Check length");
+
+  // assign post
+  onePost = JSON.parse(body).rows[0];
+});
+
+// GET ONE 200
+test.serial(`GET ${endpoint} | 200 | With one Entry`, async (t) => {
+  const {
+    server,
+    users: { user1 },
+  } = t.context;
+
+  const { statusCode, body } = await server.inject({
+    method: "GET",
+    url: `/api${endpoint}/${onePost._id}`,
+    headers: {
+      authorization: `Bearer ${user1.token}`,
+    },
+  });
+  t.is(typeof JSON.parse(body), "object", "Response is an object");
+  t.is(statusCode, 200, "Returns a status code of 200");
+  t.deepEqual(JSON.parse(body), onePost, "Returns same value");
 });

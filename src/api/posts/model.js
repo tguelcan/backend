@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 /**
  * Mongoose Schema
+ * DOC: https://mongoosejs.com/docs/guide.html
  * */
 const MessageSchema = Schema(
     {

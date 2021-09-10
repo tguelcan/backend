@@ -1,4 +1,5 @@
 import fp from "fastify-plugin";
+import sessionModel from "~/api/sessions/model";
 
 /**
  * Define Server Plugin
@@ -7,31 +8,47 @@ import fp from "fastify-plugin";
  * @param {next} next pass
  * */
 const plugin = async (server, { uri, options }, next) => {
-	// JWT Authentication helper
+	/**
+	 * JWT Authentication helper
+	 * */
 	server.decorate(
 		"authenticate",
-		(acl, model, action) => async (request, reply) => {
-			try {
-				await request.jwtVerify();
+		(acl, model, action, withSession = true) =>
+			async (request, reply) => {
+				try {
+					const { jwtid } = await request.jwtVerify();
 
-				if (acl) {
-					server.assert(
-						model || action,
-						401,
-						"Not Model or Action defined"
-					);
-					const userRole = acl(server);
-					const {
-						user: { role },
-					} = request;
-					server.assert(userRole.can(role, action, model), 401);
+					/**
+					 * Check if active session exist
+					 * */
+					withSession &&
+						server.assert(
+							await sessionModel.exists({ jwtid }),
+							401,
+							"No session found"
+						);
+
+					if (acl) {
+						server.assert(
+							model || action,
+							401,
+							"Not Model or Action defined"
+						);
+						const userRole = acl(server);
+						const {
+							user: { role },
+						} = request;
+						server.assert(userRole.can(role, action, model), 401);
+					}
+				} catch (err) {
+					reply.send(err);
 				}
-			} catch (err) {
-				reply.send(err);
 			}
-		}
 	);
 
+	/**
+	 * Add author helper that add author to document on authenticated endpoint
+	 * */
 	server.decorate(
 		"addAuthor",
 		(key = "author") =>
@@ -40,6 +57,11 @@ const plugin = async (server, { uri, options }, next) => {
 					[key]: request.user._id,
 				})
 	);
+
+	/**
+	 * Populate helper that populate specific fields
+	 * (default author population)
+	 * */
 	server.decorate(
 		"populate",
 		(

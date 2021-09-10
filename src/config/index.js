@@ -1,7 +1,7 @@
 import path from "path";
 
 /**
- * Get env variables
+ * Get env variables from running process
  * */
 const {
     PORT = 3000,
@@ -10,6 +10,9 @@ const {
     NODE_ENV,
 } = process.env;
 
+/**
+ * App core configuration
+ * */
 const config = {
     all: {
         env: NODE_ENV,
@@ -33,6 +36,7 @@ const config = {
                 expiresIn: "10080m", // one week in minutes
                 algorithm: "HS512",
             },
+            maxSessionCount: 3,
         },
         rateLimiter: {
             max: 1000,
@@ -67,29 +71,31 @@ const config = {
             },
             exposeRoute: true,
         },
-        test: {
-            instance: {
-                logger: true,
-            },
+    },
+    test: {
+        instance: {
+            logger: false,
         },
-        development: {
-            instance: {
-                logger: true,
-            },
+    },
+    development: {
+        instance: {
+            logger: true,
         },
-        production: {
-            instance: {
-                logger: true,
-            },
-            rateLimiter: {
-                max: 100,
-                timeWindow: "1 minute",
-            },
+    },
+    production: {
+        instance: {
+            logger: true,
+        },
+        rateLimiter: {
+            max: 100,
+            timeWindow: "1 minute",
         },
     },
 };
 
-// Export part
+/**
+ * Merge and export configuration
+ * */
 const mergedConf = Object.assign(config.all, config[config.all.env]);
 for (const [key, value] of Object.entries(mergedConf)) {
     module.exports[key] = value;

@@ -6,6 +6,7 @@ import fastifyJwt from "fastify-jwt";
 import auth from "./provider";
 import User from "~/api/users/model";
 import rbac from "./rbac";
+import sessionModel from "~/api/sessions/model";
 
 import { router, jwt } from "~/config";
 
@@ -23,9 +24,14 @@ const {
  * @param {next} pass next function
  * */
 const plugin = async (app, options, next) => {
+	/**
+	 * Register authentication dependencies
+	 * */
 	app.register(rbac);
 	app.register(fastifyJwt, { secret: jwt.secret, ...jwt.options });
-	// Route
+	/**
+	 * Authentication route
+	 * */
 	app.route({
 		url: `${prefix}/auth/:provider`,
 		method: ["GET"],
@@ -38,7 +44,35 @@ const plugin = async (app, options, next) => {
 				const { _id, role } = await User.createFromService(
 					providerUser
 				);
-				const token = await app.jwt.sign({ _id, role });
+				/**
+				 * Sign token
+				 * */
+				const token = await app.jwt.sign({
+					_id,
+					role,
+					jwtid: new app.mongoose.Types.ObjectId(),
+				});
+				/**
+				 * Decode token and get jwtid
+				 * */
+				const { jwtid } = await app.jwt.decode(token);
+
+				/**
+				 * Create session and store it
+				 * */
+				await sessionModel.create({
+					jwtid,
+					author: _id,
+				});
+
+				/**
+				 * Check if session exist static
+				 * */
+				await sessionModel.truncateSessions({
+					author: _id,
+					maxSessionCount: jwt.maxSessionCount,
+				});
+
 				return {
 					token,
 					...providerUser,
