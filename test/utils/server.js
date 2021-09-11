@@ -13,4 +13,10 @@ export const prepareServer = async (t) => {
     // Bind to context
     t.context.mongoConnection = await server.mongoose.connect(uri);
     t.context.server = server;
+
+    /**
+     * Utils and validations
+     * */
+
+    t.context.isMail = (email) => /\S+@\S+\.\S+/.test(email);
 };
