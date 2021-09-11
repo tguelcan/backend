@@ -5,7 +5,7 @@ import fp from "fastify-plugin";
 import fastifyJwt from "fastify-jwt";
 import auth from "./provider";
 import User from "~/api/users/model";
-import rbac from "./rbac";
+import decorators from "./decorators";
 import sessionModel from "~/api/sessions/model";
 
 import { router, jwt } from "~/config";
@@ -27,7 +27,7 @@ const plugin = async (app, options, next) => {
 	/**
 	 * Register authentication dependencies
 	 * */
-	app.register(rbac);
+	app.register(decorators);
 	app.register(fastifyJwt, { secret: jwt.secret, ...jwt.options });
 	/**
 	 * Authentication route
@@ -40,35 +40,29 @@ const plugin = async (app, options, next) => {
 			reply
 		) => {
 			try {
+				/**
+				 * Authenticate user at selected provider and
+				 * create a user if not exist or update existed user
+				 * */
 				const providerUser = await auth[provider](accessToken);
 				const { _id, role } = await User.createFromService(
 					providerUser
 				);
 				/**
-				 * Sign token
+				 * Create jwt id and sign token
 				 * */
+				const jwtid = new app.mongoose.Types.ObjectId();
 				const token = await app.jwt.sign({
 					_id,
 					role,
-					jwtid: new app.mongoose.Types.ObjectId(),
-				});
-				/**
-				 * Decode token and get jwtid
-				 * */
-				const { jwtid } = await app.jwt.decode(token);
-
-				/**
-				 * Create session and store it
-				 * */
-				await sessionModel.create({
 					jwtid,
-					author: _id,
 				});
 
 				/**
-				 * Check if session exist static
+				 * Create session and count sessions ststic
 				 * */
-				await sessionModel.truncateSessions({
+				await sessionModel.createAndtruncateSessions({
+					jwtid,
 					author: _id,
 					maxSessionCount: jwt.maxSessionCount,
 				});

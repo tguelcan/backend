@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import sessionStatics from "./statics";
 import { jwt } from "~/config";
 
 const Schema = mongoose.Schema;
@@ -23,6 +22,40 @@ const sessionSchema = Schema(
 	}
 );
 
-sessionSchema.plugin(sessionStatics);
+/**
+ * Model Statics
+ * */
+sessionSchema.plugin((schema) => {
+	/**
+	 * Delete all users
+	 * */
+	schema.statics.deleteAllUserSessions = async function (user) {
+		await this.deleteMany({ user });
+	};
+
+	/**
+	 * Create session and count max sessions of user
+	 * */
+	schema.statics.createAndtruncateSessions = async function ({
+		jwtid,
+		author,
+		maxSessionCount,
+	}) {
+		/**
+		 * Create session and store it
+		 * */
+		await this.create({
+			jwtid,
+			author,
+		});
+		const count = await this.countDocuments({ author });
+		if (count > maxSessionCount) {
+			const sessions = await this.find({ author }).sort({
+				lastActivity: 1,
+			});
+			await sessions[0].remove();
+		}
+	};
+});
 
 export default mongoose.model("Session", sessionSchema);

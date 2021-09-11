@@ -1,6 +1,10 @@
 import mongoosePaginate from "mongoose-paginate-v2";
 import { pagination } from "~/config";
 
+/**
+ * Bind mongoose plugins here
+ * @return resolve promise mongoose
+ * */
 export default (mongoose) =>
 	new Promise((resolve) => {
 		/**
@@ -9,6 +13,10 @@ export default (mongoose) =>
 		mongoosePaginate.paginate.options = pagination;
 		mongoose.plugin(mongoosePaginate);
 
-		// Return mongoose
+		/**
+		 * More mongoose plugins
+		 * ...
+		 * */
+
 		resolve(mongoose);
 	});

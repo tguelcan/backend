@@ -1,4 +1,5 @@
 import test from "ava";
+import mongoose from "mongoose";
 import { prepareServer } from "?/utils/server";
 import { createUsers } from "?/utils/users";
 
@@ -129,6 +130,12 @@ test.serial(`GET ${endpoint} | 200 | With Entry`, async (t) => {
   );
 
   t.is(JSON.parse(body).rows.length, 1, "Check length");
+
+  // Check each item in array
+  JSON.parse(body).rows.forEach((item) => {
+    t.is(item.content, "Testmessage");
+    t.true(mongoose.isValidObjectId(item._id));
+  });
 
   // assign post
   onePost = JSON.parse(body).rows[0];

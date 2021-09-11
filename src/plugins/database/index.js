@@ -22,11 +22,17 @@ const connect = (uri, options) =>
  * @param {next} next function
  * */
 const plugin = async (app, { uri, options }, next) => {
-	// Add mongodb plugins
+	/**
+	 * Add mongodb plugins
+	 * */
 	const mongooseInstance = await plugins(mongoose);
-	// Assign mongoose instance to fastify
+	/**
+	 * Assign mongoose instance to fastify
+	 * */
 	await app.decorate("mongoose", mongooseInstance);
-	// Connect if not test env
+	/**
+	 * Connect if not test env
+	 * */
 	if (!app.isTest) {
 		await connect(uri, options);
 	}
