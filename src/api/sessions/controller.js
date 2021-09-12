@@ -9,4 +9,20 @@ export const find = async ({ query, user }, reply) =>
 		}
 	);
 
-export const deleteOne = async ({ params: { _id } }, reply) => "Delete one";
+export const deleteOne = async (
+	{ body, user, isMine, params: { _id } },
+	reply
+) => {
+	const doc = await model.findById({ _id });
+	await isMine(doc, user, 401);
+	await doc.deleteOne({ jwtid: doc.jwtid });
+	reply.statusCode = 204;
+};
+
+export const deleteAll = async (
+	{ body, user, isMine, params: { _id } },
+	reply
+) => {
+	await model.deleteMany({ author: user._id });
+	reply.statusCode = 204;
+};

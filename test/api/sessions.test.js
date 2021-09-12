@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { prepareServer } from "?/utils/server";
 import { createUsers } from "?/utils/users";
 
-import Session from "~/api/sessions/model";
+import sessionModel from "~/api/sessions/model";
 import { jwt } from "~/config";
 
 test.before(prepareServer);
@@ -65,15 +65,15 @@ test.serial(`Create more sessions`, async (t) => {
   let i = 1;
   do {
     i++;
-    await Session.createAndtruncateSessions({
+    await sessionModel.createAndtruncateSessions({
       jwtid: (Math.random() + 1).toString(36).substring(3),
       author: user1.userId,
       maxSessionCount: jwt.maxSessionCount,
     });
   } while (i < jwt.maxSessionCount + 2);
 
-  const userSessions = await Session.find({ author: user1.userId });
-  const userSessionsCount = await Session.countDocuments({
+  const userSessions = await sessionModel.find({ author: user1.userId });
+  const userSessionsCount = await sessionModel.countDocuments({
     author: user1.userId,
   });
 
@@ -84,4 +84,25 @@ test.serial(`Create more sessions`, async (t) => {
     t.true(mongoose.isValidObjectId(item._id));
   });
   //
+});
+
+// DELETE ONE 401
+test.only(`DELETE ${endpoint} | 401 | Delete one Entry`, async (t) => {
+  const {
+    server,
+    users: { user1, user2 },
+  } = t.context;
+
+  const getAnotherSession = await sessionModel.findOne({
+    author: user2.userId,
+  });
+
+  const { statusCode, statusMessage } = await server.inject({
+    method: "DELETE",
+    url: `/api${endpoint}/${getAnotherSession._id}`,
+    headers: {
+      authorization: `Bearer ${user1.token}`,
+    },
+  });
+  t.is(statusCode, 401, "Returns a status code of 401");
 });

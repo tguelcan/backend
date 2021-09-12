@@ -11,7 +11,6 @@
     NODEJS Backend starter is a highly customizable REST backend.
     <br />
     <br />
-    ·
     <a href="https://github.com/tguelcan/backend/issues">Report Bug</a>
     ·
     <a href="https://github.com/tguelcan/backend/issues">Request Feature</a>

@@ -13,36 +13,37 @@ const plugin = async (server, { uri, options }, next) => {
 	 * */
 	server.decorate(
 		"authenticate",
-		(acl, model, action, opt) => async (request, reply) => {
-			try {
-				const { jwtid, _id } = await request.jwtVerify();
+		(acl, model, action, withSession = true) =>
+			async (request, reply) => {
+				try {
+					const { jwtid, _id } = await request.jwtVerify();
 
-				/**
-				 * Check if active session exist
-				 * */
-				opt?.withSession &&
-					server.assert(
-						await sessionModel.exists({ jwtid }),
-						401,
-						"No session found"
-					);
+					/**
+					 * Check if active session exist
+					 * */
+					withSession &&
+						server.assert(
+							await sessionModel.exists({ jwtid }),
+							401,
+							"No session found"
+						);
 
-				if (acl) {
-					server.assert(
-						model || action,
-						401,
-						"Not Model or Action defined"
-					);
-					const userRole = acl(server);
-					const {
-						user: { role },
-					} = request;
-					server.assert(userRole.can(role, action, model), 401);
+					if (acl) {
+						server.assert(
+							model || action,
+							401,
+							"Not Model or Action defined"
+						);
+						const userRole = acl(server);
+						const {
+							user: { role },
+						} = request;
+						server.assert(userRole.can(role, action, model), 401);
+					}
+				} catch (err) {
+					reply.send(err);
 				}
-			} catch (err) {
-				reply.send(err);
 			}
-		}
 	);
 
 	/**
