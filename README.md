@@ -117,18 +117,7 @@ You can run tests with:
 yarn run test
 ```
 
-## Adding routes / plugins / services
-
-### Mongoose plugins
-
-0. Read about [Mongoose Plugins](https://mongoosejs.com/docs/plugins.html)
-1. Create your new plugin in `src/services/mongoose/plugins`
-2. Make sure to export it in `src/services/mongoose/index.js`
-3. Access the plugin in your model like this:
-
-```js
-import { yourPlugin } from "s/mongoose";
-```
+## Adding routes and plugins
 
 ### Adding routes
 
