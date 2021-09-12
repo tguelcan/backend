@@ -44,7 +44,7 @@ test.serial(`GET ${endpoint} | 200 | With Entry`, async (t) => {
   t.is(statusCode, 200, "Returns a status code of 200");
 
   // Check each item in array
-  JSON.parse(body).forEach((item) => {
+  JSON.parse(body).rows.forEach((item) => {
     t.is(item.jwtid, "123456");
     t.true(mongoose.isValidObjectId(item._id));
   });

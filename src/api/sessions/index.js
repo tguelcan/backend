@@ -1,12 +1,11 @@
 import { find, deleteOne } from "./controller";
 import rbac from "./rbac";
 
-export default async function (app, opts) {
+export default async function (app) {
 	app.route({
 		url: "/",
 		method: ["GET"],
 		preValidation: [app.authenticate(rbac, "find", "session")],
-		preSerialization: [app.pick(["_id", "jwtid"])],
 		handler: find,
 	});
 

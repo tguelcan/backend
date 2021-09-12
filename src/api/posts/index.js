@@ -1,7 +1,7 @@
-import { find, findOne, createOne } from "./controller";
+import { find, findOne, createOne, updateOne, deleteOne } from "./controller";
 import rbac from "./rbac";
 
-export default async function (app, opts) {
+export default async function (app) {
 	app.route({
 		url: "/",
 		method: ["GET"],
@@ -12,10 +12,8 @@ export default async function (app, opts) {
 	app.route({
 		url: "/",
 		method: ["POST"],
-		preValidation: [
-			app.authenticate(rbac, "createOne", "post"),
-			app.addAuthor(),
-		],
+		preValidation: [app.authenticate(rbac, "createOne", "post")],
+		preHandler: [app.addAuthor()],
 		handler: createOne,
 		preSerialization: [
 			app.populate(),
@@ -35,6 +33,7 @@ export default async function (app, opts) {
 				properties: {
 					content: { type: "string", description: "your post" },
 				},
+				required: ["content"],
 			},
 		},
 	});
@@ -49,6 +48,24 @@ export default async function (app, opts) {
 			app.populate(),
 			app.pick(["_id", "content", "author"]),
 		],
+	});
+
+	app.route({
+		url: "/:_id",
+		method: ["PUT"],
+		preValidation: [app.authenticate(rbac, "updateOne", "post")],
+		handler: updateOne,
+		preSerialization: [
+			app.populate(),
+			app.pick(["_id", "content", "author"]),
+		],
+	});
+
+	app.route({
+		url: "/:_id",
+		method: ["DELETE"],
+		preValidation: [app.authenticate(rbac, "deleteOne", "post")],
+		handler: deleteOne,
 	});
 }
 /*

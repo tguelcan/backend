@@ -10,11 +10,8 @@ export const find = async ({ query }, reply) =>
 		}
 	);
 
-export const findOne = async ({ params: { _id } }, reply) => {
-	const data = await model.findById({ _id });
-	// Return data
-	return data;
-};
+export const findOne = async ({ params: { _id } }, reply, done) =>
+	await model.findById({ _id });
 
 export const createOne = async ({ body }, reply) => {
 	// Create object
@@ -23,8 +20,21 @@ export const createOne = async ({ body }, reply) => {
 	return await data.save();
 };
 
-export const deleteOne = async ({ params: { _id } }, reply) => {
-	const data = await model.findById({ _id });
-	await data.delete({ _id: id });
+export const updateOne = async (
+	{ body, user, isMine, params: { _id } },
+	reply
+) => {
+	const doc = await model.findById({ _id }).throwIfEmpty(reply);
+	await isMine(doc, user, 401);
+	return await Object.assign(doc, body).save();
+};
+
+export const deleteOne = async (
+	{ body, user, isMine, params: { _id } },
+	reply
+) => {
+	const doc = await model.findById({ _id });
+	await isMine(doc, user, 401);
+	await doc.deleteOne({ _id: doc._id });
 	reply.statusCode = 204;
 };

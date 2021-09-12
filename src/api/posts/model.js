@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
  * Mongoose Schema
  * DOC: https://mongoosejs.com/docs/guide.html
  * */
-const MessageSchema = Schema(
+const postSchema = Schema(
     {
         content: {
             type: String,
@@ -18,4 +18,4 @@ const MessageSchema = Schema(
     }
 );
 
-export default mongoose.model("Post", MessageSchema);
+export default mongoose.model("Post", postSchema);

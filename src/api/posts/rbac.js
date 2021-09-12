@@ -12,16 +12,8 @@ export default (app) =>
 				can: [
 					"post:findOne",
 					"post:createOne",
-					{
-						name: "post:updateOne",
-						when: ({ document: { author }, credentials }, done) =>
-							done(null, author._id.equals(credentials._id)),
-					},
-					{
-						name: "post:deleteOne",
-						when: ({ document: { author }, credentials }, done) =>
-							done(null, author._id.equals(credentials._id)),
-					},
+					"post:updateOne",
+					"post:deleteOne",
 				],
 				inherits: ["guest"],
 			},

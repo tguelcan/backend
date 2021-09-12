@@ -18,7 +18,7 @@ test.serial(`GET ${endpoint} | 401`, async (t) => {
     url: `/api${endpoint}`,
   });
 
-  t.is(statusCode, 401, "Returns a status code of 200");
+  t.is(statusCode, 401, "Returns a status code of 401");
   t.is(statusMessage, "Unauthorized", "Returns a Unauthorized status message");
 });
 
@@ -34,7 +34,7 @@ test.serial(`POST ${endpoint} | 401`, async (t) => {
     },
   });
 
-  t.is(statusCode, 401, "Returns a status code of 200");
+  t.is(statusCode, 401, "Returns a status code of 401");
   t.is(statusMessage, "Unauthorized", "Returns a Unauthorized status message");
 });
 
@@ -158,4 +158,85 @@ test.serial(`GET ${endpoint} | 200 | With one Entry`, async (t) => {
   t.is(typeof JSON.parse(body), "object", "Response is an object");
   t.is(statusCode, 200, "Returns a status code of 200");
   t.deepEqual(JSON.parse(body), onePost, "Returns same value");
+});
+
+// PUT ONE 401
+test.serial(`PUT ${endpoint} | 401 | Edit one Entry`, async (t) => {
+  const {
+    server,
+    users: { user2 },
+  } = t.context;
+
+  const newContent = "TestMessage2";
+  const { statusCode, statusMessage } = await server.inject({
+    method: "PUT",
+    url: `/api${endpoint}/${onePost._id}`,
+    headers: {
+      authorization: `Bearer ${user2.token}`,
+    },
+    payload: {
+      content: newContent,
+    },
+  });
+  t.is(statusCode, 401, "Returns a status code of 401");
+  t.is(statusMessage, "Unauthorized", "Returns a Unauthorized status message");
+});
+
+// DELETE ONE 401
+test.serial(`DELETE ${endpoint} | 401 | Delete one Entry`, async (t) => {
+  const {
+    server,
+    users: { user2 },
+  } = t.context;
+
+  const { statusCode, statusMessage } = await server.inject({
+    method: "DELETE",
+    url: `/api${endpoint}/${onePost._id}`,
+    headers: {
+      authorization: `Bearer ${user2.token}`,
+    },
+  });
+  t.is(statusCode, 401, "Returns a status code of 401");
+  t.is(statusMessage, "Unauthorized", "Returns a Unauthorized status message");
+});
+
+// PUT EDIT ONE 200
+test.serial(`PUT ${endpoint} | 200 | Edit one Entry`, async (t) => {
+  const {
+    server,
+    users: { user1 },
+  } = t.context;
+
+  const newContent = "TestMessage2";
+  const { statusCode, body } = await server.inject({
+    method: "PUT",
+    url: `/api${endpoint}/${onePost._id}`,
+    headers: {
+      authorization: `Bearer ${user1.token}`,
+    },
+    payload: {
+      content: newContent,
+    },
+  });
+  t.is(typeof JSON.parse(body), "object", "Response is an object");
+  t.is(statusCode, 200, "Returns a status code of 200");
+  t.notDeepEqual(JSON.parse(body), onePost, "Returns not the old value");
+  t.is(JSON.parse(body).content, newContent, "Returns same value");
+});
+
+// DELETE ONE 204
+test.serial(`DELETE ${endpoint} | 204 | Delete one Entry`, async (t) => {
+  const {
+    server,
+    users: { user1 },
+  } = t.context;
+
+  const { statusCode, statusMessage } = await server.inject({
+    method: "DELETE",
+    url: `/api${endpoint}/${onePost._id}`,
+    headers: {
+      authorization: `Bearer ${user1.token}`,
+    },
+  });
+  t.is(statusCode, 204, "Returns a status code of 204");
 });

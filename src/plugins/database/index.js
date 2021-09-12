@@ -23,13 +23,9 @@ const connect = (uri, options) =>
  * */
 const plugin = async (app, { uri, options }, next) => {
 	/**
-	 * Add mongodb plugins
-	 * */
-	const mongooseInstance = await plugins(mongoose);
-	/**
 	 * Assign mongoose instance to fastify
 	 * */
-	await app.decorate("mongoose", mongooseInstance);
+	await app.decorate("mongoose", mongoose);
 	/**
 	 * Connect if not test env
 	 * */
@@ -39,6 +35,11 @@ const plugin = async (app, { uri, options }, next) => {
 
 	next();
 };
+
+/**
+ * Bind mongoose plugins
+ * */
+plugins(mongoose);
 
 export default fp(plugin, {
 	fastify: "3.x",

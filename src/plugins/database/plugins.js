@@ -14,6 +14,33 @@ export default (mongoose) =>
 		mongoose.plugin(mongoosePaginate);
 
 		/**
+		 * Throw 401 if not found document
+		 * */
+
+		mongoose.plugin(
+			(schema) =>
+				(schema.query.throwIfEmpty = function (
+					reply,
+					message = "Document not found"
+				) {
+					const originalExec = this.exec;
+
+					this.exec = () => {
+						const applied = originalExec.apply(this);
+						return applied.then((doc) => {
+							if (!doc) {
+								reply.notFound();
+							}
+
+							return doc;
+						});
+					};
+
+					return this;
+				})
+		);
+
+		/**
 		 * More mongoose plugins
 		 * ...
 		 * */

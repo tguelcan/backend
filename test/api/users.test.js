@@ -30,7 +30,7 @@ test.serial(`GET ${endpoint} | 401`, async (t) => {
 });
 
 // Check stored user
-test.serial(`Check stored user`, async (t) => {
+test.serial(`Check microsoft user is stored`, async (t) => {
 	const {
 		server,
 		users: { user1 },
@@ -40,6 +40,17 @@ test.serial(`Check stored user`, async (t) => {
 	t.true(mongoose.isValidObjectId(user1._id));
 	t.is(user1.service, "microsoft");
 	t.is(typeof user1.token, "string");
+});
+test.serial(`Check google user is stored`, async (t) => {
+	const {
+		server,
+		users: { user2 },
+	} = t.context;
+
+	t.true(t.context.isMail(user2.email));
+	t.true(mongoose.isValidObjectId(user2._id));
+	t.is(user2.service, "google");
+	t.is(typeof user2.token, "string");
 });
 
 // Check JWT
