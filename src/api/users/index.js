@@ -1,11 +1,12 @@
-import { find } from "./controller";
+import { findMe } from "./controller";
 import rbac from "./rbac";
 
 export default async function (app, opts) {
 	app.route({
-		url: "/",
+		url: "/me",
 		method: ["GET"],
-		preValidation: [app.authenticate(rbac, "find", "user")],
-		handler: find,
+		preValidation: [app.authenticate(rbac, "findMe", "user")],
+		preSerialization: [app.pick(["displayName", "email", "picture"])],
+		handler: findMe,
 	});
 }

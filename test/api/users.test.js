@@ -13,7 +13,7 @@ test.before(createUsers);
 const endpoint = "/users";
 
 // GET 401
-test.serial(`GET ${endpoint} | 401`, async (t) => {
+test.serial(`GET ${endpoint} | 404`, async (t) => {
 	const { server } = t.context;
 
 	const { statusCode, statusMessage } = await server.inject({
@@ -21,12 +21,27 @@ test.serial(`GET ${endpoint} | 401`, async (t) => {
 		url: `/api${endpoint}`,
 	});
 
-	t.is(statusCode, 401, "Returns a status code of 200");
-	t.is(
-		statusMessage,
-		"Unauthorized",
-		"Returns a Unauthorized status message"
-	);
+	t.is(statusCode, 404, "Returns a status code of 404");
+});
+
+// GET 200
+test.serial(`GET ${endpoint} | 200`, async (t) => {
+	const {
+		server,
+		users: { user1 },
+	} = t.context;
+
+	const { statusCode, body } = await server.inject({
+		method: "GET",
+		url: `/api${endpoint}/me`,
+		headers: {
+			authorization: `Bearer ${user1.token}`,
+		},
+	});
+
+	t.is(statusCode, 200, "Returns a status code of 10");
+	t.is(JSON.parse(body).displayName, user1.displayName, "Check displayName");
+	t.is(JSON.parse(body).email, user1.email, "Check email");
 });
 
 // Check stored user

@@ -1,3 +1,3 @@
 import model from "./model";
 
-export const find = async (request, reply) => await model.find();
+export const findMe = async ({ user }, reply) => await model.findOne(user);

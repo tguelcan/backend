@@ -5,10 +5,8 @@
 export default (app) =>
 	new app.RBAC({
 		roles: {
-			guest: { can: ["*:read"] },
 			user: {
-				can: ["user:create"],
-				inherits: ["guest"],
+				can: ["user:findMe"],
 			},
 			admin: { can: ["*"] },
 		},
