@@ -127,8 +127,6 @@ yarn run test
 
 Create a folder in /api and create a index.js file
 
-=> All required files should now be generated and you can start writing code!
-
 1. Define RBAC in /api/resource-name/rbac.js
 2. Define model in /api/resource-name/model.js
 3. Write tests in /tests/api/resoure-name.test.js
