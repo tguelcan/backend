@@ -44,7 +44,7 @@ test.serial(`GET ${endpoint} | 200`, async (t) => {
 	t.is(JSON.parse(body).email, user1.email, "Check email");
 });
 
-// Check stored user
+// Check stored microsoft user
 test.serial(`Check microsoft user is stored`, async (t) => {
 	const {
 		server,
@@ -56,6 +56,8 @@ test.serial(`Check microsoft user is stored`, async (t) => {
 	t.is(user1.service, "microsoft");
 	t.is(typeof user1.token, "string");
 });
+
+// Check stored google user
 test.serial(`Check google user is stored`, async (t) => {
 	const {
 		server,

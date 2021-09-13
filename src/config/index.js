@@ -7,7 +7,7 @@ const {
     PORT = 3000,
     MONGO_URI = "mongodb://localhost:27017/myapp",
     JWT_SECRET,
-    NODE_ENV,
+    NODE_ENV = "development",
 } = process.env;
 
 /**
