@@ -1,18 +1,17 @@
 import { find, findOne, createOne, updateOne, deleteOne } from "./controller";
-import rbac from "./rbac";
 
 export default async function (app) {
 	app.route({
 		url: "/",
 		method: ["GET"],
-		preValidation: [app.authenticate(rbac, "find", "post")],
+		preValidation: [app.authenticate(["user", "admin"])],
 		handler: find,
 	});
 
 	app.route({
 		url: "/",
 		method: ["POST"],
-		preValidation: [app.authenticate(rbac, "createOne", "post")],
+		preValidation: [app.authenticate()],
 		preHandler: [app.addAuthor()],
 		handler: createOne,
 		preSerialization: [
@@ -41,7 +40,7 @@ export default async function (app) {
 	app.route({
 		url: "/:_id",
 		method: ["GET"],
-		preValidation: [app.authenticate(rbac, "findOne", "post")],
+		preValidation: [app.authenticate()],
 		handler: findOne,
 		preSerialization: [
 			app.throwIfEmpty(),
@@ -53,7 +52,7 @@ export default async function (app) {
 	app.route({
 		url: "/:_id",
 		method: ["PUT"],
-		preValidation: [app.authenticate(rbac, "updateOne", "post")],
+		preValidation: [app.authenticate()],
 		handler: updateOne,
 		preSerialization: [
 			app.populate(),
@@ -64,7 +63,7 @@ export default async function (app) {
 	app.route({
 		url: "/:_id",
 		method: ["DELETE"],
-		preValidation: [app.authenticate(rbac, "deleteOne", "post")],
+		preValidation: [app.authenticate()],
 		handler: deleteOne,
 	});
 }

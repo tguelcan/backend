@@ -1,6 +1,6 @@
 import model from "./model";
 
-export const find = async ({ query }, reply) =>
+export const find = async ({ query, can, user }, reply) =>
 	await model.paginate(
 		{},
 		{
@@ -25,7 +25,7 @@ export const updateOne = async (
 	reply
 ) => {
 	const doc = await model.findById({ _id }).throwIfEmpty(reply);
-	await isMine(doc, user, 401);
+	await isMine(user, doc, 401);
 	return await Object.assign(doc, body).save();
 };
 
@@ -34,7 +34,7 @@ export const deleteOne = async (
 	reply
 ) => {
 	const doc = await model.findById({ _id });
-	await isMine(doc, user, 401);
+	await isMine(user, doc, 401);
 	await doc.deleteOne({ _id: doc._id });
 	reply.statusCode = 204;
 };

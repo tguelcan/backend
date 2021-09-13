@@ -1,24 +1,23 @@
 import { find, deleteOne, deleteAll } from "./controller";
-import rbac from "./rbac";
 
 export default async function (app) {
 	app.route({
 		url: "/",
 		method: ["GET"],
-		preValidation: [app.authenticate(rbac, "find", "session")],
+		preValidation: [app.authenticate()],
 		handler: find,
 	});
 
 	app.route({
 		url: "/:_id",
-		preValidation: [app.authenticate(rbac, "deleteOne", "session")],
+		preValidation: [app.authenticate()],
 		method: ["DELETE"],
 		handler: deleteOne,
 	});
 
 	app.route({
 		url: "/all",
-		preValidation: [app.authenticate(rbac, "deleteAll", "session")],
+		preValidation: [app.authenticate()],
 		method: ["DELETE"],
 		handler: deleteAll,
 	});

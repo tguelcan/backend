@@ -17,19 +17,6 @@ const plugin = async (server, { uri, options }, next) => {
 	server.decorate("isTest", NODE_ENV === "test");
 
 	/**
-	 * Check if document is mine with app or server.isMine(doc, user)
-	 * */
-	server.decorateRequest("isMine", (doc, { _id }, statusCode) =>
-		statusCode
-			? server.assert(
-					doc.author._id.equals(_id),
-					statusCode,
-					"Document not yours"
-			  )
-			: doc.author._id.equals(_id)
-	);
-
-	/**
 	 * Flat pick decorator
 	 * */
 	server.decorate(

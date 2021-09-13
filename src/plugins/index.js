@@ -5,9 +5,9 @@ import fastifySensible from "fastify-sensible";
 import fastifyFormbody from "fastify-formbody";
 import fastifyAutoload from "fastify-autoload";
 import fastifyHelmet from "fastify-helmet";
+import fastifyGuard from "fastify-guard";
 import db from "~/plugins/database";
 import helper from "~/plugins/helper";
-import rbac from "~/plugins/rbac";
 import auth from "~/plugins/auth";
 import { database, rateLimiter, documentation, router } from "~/config";
 
@@ -35,15 +35,19 @@ const plugin = async (app, options, next) => {
 	await app.register(db, database);
 
 	/**
-	 * RBAC Plugin
-	 * DOC: https://github.com/SkeLLLa/fast-rbac#docs
-	 * */
-	await app.register(rbac);
-
-	/**
 	 * Auth Plugin
 	 * */
 	await app.register(auth);
+
+	/**
+	 * Guard Plugin
+	 * https://github.com/hsynlms/fastify-guard
+	 * */
+	await app.register(fastifyGuard, {
+		errorHandler: (result, req, reply) => {
+			return reply.send("you are not allowed to call this route");
+		},
+	});
 
 	/**
 	 * Exception handler

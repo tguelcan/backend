@@ -22,6 +22,8 @@ const config = {
         router: {
             dir: path.join(__dirname, "../api"),
             options: { prefix: "/api" },
+            autoHooks: true,
+            // autoHooksPattern: /^[_.]?rbac(\.js|\.cjs|\.mjs)$/i,
         },
         database: {
             uri: MONGO_URI,

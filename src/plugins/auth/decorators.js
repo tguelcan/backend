@@ -1,6 +1,5 @@
 import fp from "fastify-plugin";
 import sessionModel from "~/api/sessions/model";
-
 /**
  * Define Server Plugin
  * @param {server} server instance
@@ -9,15 +8,25 @@ import sessionModel from "~/api/sessions/model";
  * */
 const plugin = async (server, { uri, options }, next) => {
 	/**
+	 * Check if user has the right role
+	 * */
+	server.decorateRequest("can", ({ role }, roles, statusCode = 401) =>
+		server.assert(
+			roles.includes(role),
+			statusCode,
+			"You do not have the permission"
+		)
+	);
+
+	/**
 	 * JWT Authentication helper
 	 * */
 	server.decorate(
 		"authenticate",
-		(acl, model, action, withSession = true) =>
+		(roles = ["user"], withSession = true) =>
 			async (request, reply) => {
 				try {
-					const { jwtid, _id } = await request.jwtVerify();
-
+					const { jwtid, _id, role } = await request.jwtVerify();
 					/**
 					 * Check if active session exist
 					 * */
@@ -28,22 +37,27 @@ const plugin = async (server, { uri, options }, next) => {
 							"No session found"
 						);
 
-					if (acl) {
-						server.assert(
-							model || action,
-							401,
-							"Not Model or Action defined"
-						);
-						const userRole = acl(server);
-						const {
-							user: { role },
-						} = request;
-						server.assert(userRole.can(role, action, model), 401);
-					}
+					/**
+					 * Check if user have right roles over request decorator
+					 * */
+					await request.can({ role }, roles);
 				} catch (err) {
 					reply.send(err);
 				}
 			}
+	);
+
+	/**
+	 * Check if document is mine with app or server.isMine(doc, user)
+	 * */
+	server.decorateRequest("isMine", ({ _id }, doc, statusCode) =>
+		statusCode
+			? server.assert(
+					doc.author._id.equals(_id),
+					statusCode,
+					"Document not yours"
+			  )
+			: doc.author._id.equals(_id)
 	);
 
 	/**
