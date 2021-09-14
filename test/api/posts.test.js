@@ -7,7 +7,7 @@ import model from "~/api/posts/model";
 test.before(prepareServer);
 test.before(createUsers);
 
-test.serial.before(async (t) => {
+test.serial.beforeEach(async (t) => {
   let doc = await model.create({
     content: "Hallo123",
     author: t.context.users.user1.userId,
@@ -17,6 +17,10 @@ test.serial.before(async (t) => {
     ...doc.toObject(),
     _id: doc._id.toString(),
   };
+});
+
+test.serial.afterEach(async (t) => {
+  await model.deleteMany();
 });
 
 const endpoint = "/posts";
@@ -130,7 +134,7 @@ test.serial(`GET ${endpoint} | 200 | With Entry`, async (t) => {
   t.like(
     JSON.parse(body),
     {
-      totalDocs: 2,
+      totalDocs: 1,
       offset: 0,
       totalPages: 1,
       page: 1,
@@ -140,7 +144,7 @@ test.serial(`GET ${endpoint} | 200 | With Entry`, async (t) => {
     "Check keys"
   );
 
-  t.is(JSON.parse(body).rows.length, 2, "Check length");
+  t.is(JSON.parse(body).rows.length, 1, "Check length");
 
   // Check each item in array
   JSON.parse(body).rows.forEach((item) => {
@@ -169,6 +173,54 @@ test.serial(`GET ${endpoint} | 200 | With two Entries`, async (t) => {
   t.is(typeof JSON.parse(body).author, "object", "Author is exist in object");
   t.is(statusCode, 200, "Returns a status code of 200");
   t.is(JSON.parse(body).content, "Hallo123", "Returns same value");
+});
+
+// Create more Entries
+test.serial(`Create more entries`, async (t) => {
+  const {
+    server,
+    users: { user1 },
+  } = t.context;
+
+  /**
+   * Create entries
+   * */
+  let i = 1;
+  const totalDocs = 50;
+  do {
+    const entry = new Object({
+      content: (Math.random() + 1).toString(36).substring(3),
+      author: user1.userId,
+    });
+
+    await model.create(entry);
+    i++;
+  } while (i <= totalDocs);
+
+  const { statusCode, body } = await server.inject({
+    method: "GET",
+    url: `/api${endpoint}`,
+    headers: {
+      authorization: `Bearer ${user1.token}`,
+    },
+  });
+
+  t.is(typeof JSON.parse(body), "object", "Response is an object");
+  t.is(statusCode, 200, "Returns a status code of 200");
+  t.like(
+    JSON.parse(body),
+    {
+      totalDocs: totalDocs + 1,
+      offset: 0,
+      totalPages: 6,
+      page: 1,
+      prevPage: null,
+      nextPage: 2,
+    },
+    "Check keys"
+  );
+
+  t.is(JSON.parse(body).rows.length, 10, "Check length");
 });
 
 // PUT ONE 401
