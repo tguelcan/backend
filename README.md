@@ -199,6 +199,6 @@ Tayfun Gülcan - [@Tayfuuu](https://twitter.com/Tayfuuu)
 - [AVA](https://github.com/avajs/ava)
 - [fastify](https://www.fastify.io)
 
-## recommended sources
+## Code of Conduct
 
-//
+👋 Be nice. See our [code of conduct](CONDUCT.md)
