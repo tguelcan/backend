@@ -11,13 +11,13 @@ export const find = async ({ query, can, user }, reply) =>
 	);
 
 export const findOne = async ({ params: { _id } }, reply, done) =>
-	await model.findById({ _id });
+	model.findById({ _id });
 
 export const createOne = async ({ body }, reply) => {
 	// Create object
 	const data = await new model(body);
 	// Save object
-	return await data.save();
+	return data.save();
 };
 
 export const updateOne = async (
@@ -26,7 +26,7 @@ export const updateOne = async (
 ) => {
 	const doc = await model.findById({ _id }).throwIfEmpty(reply);
 	await isMine(user, doc, 401);
-	return await Object.assign(doc, body).save();
+	return Object.assign(doc, body).save();
 };
 
 export const deleteOne = async (
