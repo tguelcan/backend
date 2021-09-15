@@ -1,6 +1,4 @@
 // Auth Plugin
-import fs from "fs";
-import path from "path";
 import fp from "fastify-plugin";
 import fastifyJwt from "fastify-jwt";
 import auth from "./provider";
