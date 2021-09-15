@@ -1,3 +1,5 @@
+[![Node.js CI](https://github.com/tguelcan/backend/actions/workflows/test-ci.yml/badge.svg?branch=master)](https://github.com/tguelcan/backend/actions/workflows/test-ci.yml)
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -15,6 +17,7 @@
     ·
     <a href="https://github.com/tguelcan/backend/issues">Request Feature</a>
   </p>
+
 </p>
 
 <!-- TABLE OF CONTENTS -->

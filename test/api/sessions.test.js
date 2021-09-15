@@ -1,5 +1,6 @@
 import test from "ava";
 import mongoose from "mongoose";
+import { random } from "lodash";
 
 import { prepareServer } from "?/utils/server";
 import { createUsers } from "?/utils/users";
@@ -53,7 +54,6 @@ test.serial(`GET ${endpoint} | 200 | With Entry`, async (t) => {
 // Create Sessions
 test.serial(`Create more sessions`, async (t) => {
   const {
-    server,
     users: { user1 },
   } = t.context;
 
@@ -66,7 +66,7 @@ test.serial(`Create more sessions`, async (t) => {
   do {
     i++;
     await sessionModel.createAndtruncateSessions({
-      jwtid: (Math.random() + 1).toString(36).substring(3),
+      jwtid: random(3000, 5000).toString(4),
       author: user1.userId,
       maxSessionCount: jwt.maxSessionCount,
     });
@@ -97,7 +97,7 @@ test.only(`DELETE ${endpoint} | 401 | Delete one Entry`, async (t) => {
     author: user2.userId,
   });
 
-  const { statusCode, statusMessage } = await server.inject({
+  const { statusCode } = await server.inject({
     method: "DELETE",
     url: `/api${endpoint}/${getAnotherSession._id}`,
     headers: {

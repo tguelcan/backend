@@ -1,5 +1,7 @@
 import test from "ava";
 import mongoose from "mongoose";
+import { random } from "lodash";
+
 import { prepareServer } from "?/utils/server";
 import { createUsers } from "?/utils/users";
 import model from "~/api/posts/model";
@@ -189,7 +191,7 @@ test.serial(`Create more entries`, async (t) => {
   const totalDocs = 50;
   do {
     const entry = new Object({
-      content: (Math.random() + 1).toString(36).substring(3),
+      content: random(3000, 5000).toString(4),
       author: user1.userId,
     });
 

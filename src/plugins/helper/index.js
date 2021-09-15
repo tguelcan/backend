@@ -1,5 +1,5 @@
 import fp from "fastify-plugin";
-import pick from "./pick";
+import pick from "./flatPick";
 
 /**
  * Define Server Plugin

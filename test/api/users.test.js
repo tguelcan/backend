@@ -1,11 +1,8 @@
 import test from "ava";
 import mongoose from "mongoose";
-
+import { isEmail } from "validator";
 import { prepareServer } from "?/utils/server";
 import { createUsers } from "?/utils/users";
-
-import User from "~/api/users/model";
-import { jwt } from "~/config";
 
 test.before(prepareServer);
 test.before(createUsers);
@@ -16,7 +13,7 @@ const endpoint = "/users";
 test.serial(`GET ${endpoint} | 404`, async (t) => {
 	const { server } = t.context;
 
-	const { statusCode, statusMessage } = await server.inject({
+	const { statusCode } = await server.inject({
 		method: "GET",
 		url: `/api${endpoint}`,
 	});
@@ -47,11 +44,10 @@ test.serial(`GET ${endpoint} | 200`, async (t) => {
 // Check stored microsoft user
 test.serial(`Check microsoft user is stored`, async (t) => {
 	const {
-		server,
 		users: { user1 },
 	} = t.context;
 
-	t.true(t.context.isMail(user1.email));
+	t.true(isEmail(user1.email));
 	t.true(mongoose.isValidObjectId(user1._id));
 	t.is(user1.service, "microsoft");
 	t.is(typeof user1.token, "string");
@@ -60,11 +56,10 @@ test.serial(`Check microsoft user is stored`, async (t) => {
 // Check stored google user
 test.serial(`Check google user is stored`, async (t) => {
 	const {
-		server,
 		users: { user2 },
 	} = t.context;
 
-	t.true(t.context.isMail(user2.email));
+	t.true(isEmail(user2.email));
 	t.true(mongoose.isValidObjectId(user2._id));
 	t.is(user2.service, "google");
 	t.is(typeof user2.token, "string");

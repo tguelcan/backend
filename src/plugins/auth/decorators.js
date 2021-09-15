@@ -26,7 +26,7 @@ const plugin = async (server, { uri, options }, next) => {
 		(roles = ["user"], withSession = true) =>
 			async (request, reply) => {
 				try {
-					const { jwtid, _id, role } = await request.jwtVerify();
+					const { jwtid, role } = await request.jwtVerify();
 					/**
 					 * Check if active session exist
 					 * */

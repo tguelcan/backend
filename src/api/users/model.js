@@ -39,6 +39,9 @@ const Schema = new mongoose.Schema(
 /**
  * Mongoose Statics
  * DOC: https://mongoosejs.com/docs/guide.html#statics
+ *  // user.username = displayName
+ *  // user.picture = picture
+ *  // user.verified = true
  * */
 Schema.statics.createFromService = async function ({
     service,
@@ -53,9 +56,6 @@ Schema.statics.createFromService = async function ({
     });
     if (user) {
         user.services[service] = id;
-        // user.username = displayName
-        // user.picture = picture
-        // user.verified = true
         return user.save();
     }
 

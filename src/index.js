@@ -1,6 +1,6 @@
 import fastify from "fastify";
 import plugins from "~/plugins";
-import { instance, server, env } from "~/config";
+import { instance, server } from "~/config";
 
 /**
  * Define fastify instance

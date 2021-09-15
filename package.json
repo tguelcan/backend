@@ -41,7 +41,8 @@
     "got": "^11.8.2",
     "lodash": "^4.17.21",
     "mongoose": "^6.0.2",
-    "mongoose-paginate-v2": "^1.4.2"
+    "mongoose-paginate-v2": "^1.4.2",
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.14.3",
