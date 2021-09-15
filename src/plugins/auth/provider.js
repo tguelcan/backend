@@ -14,7 +14,6 @@ const provider = {
 			}
 		).json();
 
-		// Todo: Serializate
 		return {
 			id,
 			service: "google",
@@ -38,7 +37,6 @@ const provider = {
 			}
 		).json();
 
-		// Todo: Serializate
 		return {
 			id,
 			service: "microsoft",
