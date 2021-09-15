@@ -1,7 +1,7 @@
 import model from "./model";
 
 export const find = async ({ query, user, can }, reply) =>
-	await model.paginate(
+	model.paginate(
 		{ author: user._id },
 		{
 			...query,
