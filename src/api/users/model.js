@@ -59,7 +59,7 @@ Schema.statics.createFromService = async function ({
         return user.save();
     }
 
-    return await this.create({
+    return this.create({
         services: { [service]: id },
         email,
         displayName,
