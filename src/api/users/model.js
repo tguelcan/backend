@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 /**
  * Mongoose Schema
@@ -28,13 +28,13 @@ const Schema = new mongoose.Schema(
         },
         role: {
             type: String,
-            default: "user",
+            default: 'user',
         },
     },
     {
         versionKey: false,
     }
-);
+)
 
 /**
  * Mongoose Statics
@@ -49,14 +49,13 @@ Schema.statics.createFromService = async function ({
     email,
     displayName,
     picture,
-    lang,
 }) {
     const user = await this.findOne({
         $or: [{ [`services.${service}`]: id }, { email }],
-    });
+    })
     if (user) {
-        user.services[service] = id;
-        return user.save();
+        user.services[service] = id
+        return user.save()
     }
 
     return this.create({
@@ -64,7 +63,7 @@ Schema.statics.createFromService = async function ({
         email,
         displayName,
         picture,
-    });
-};
+    })
+}
 
-export default mongoose.model("User", Schema);
+export default mongoose.model('User', Schema)

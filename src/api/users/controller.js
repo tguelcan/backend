@@ -1,3 +1,3 @@
-import model from "./model";
+import model from './model'
 
-export const findMe = async ({ user }, reply) => model.findOne(user);
+export const findMe = async ({ user }) => model.findOne(user)

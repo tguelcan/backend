@@ -1,4 +1,4 @@
-import { last, get, set, isArray, forEach } from "lodash";
+import { last, get, set, isArray, forEach } from 'lodash'
 
 /**
  * flatPick uses the pick function
@@ -8,25 +8,25 @@ import { last, get, set, isArray, forEach } from "lodash";
  * @return {object} filtered object
  * */
 const pick = (object, paths) => {
-	const item = {};
+    const item = {}
 
-	paths.forEach((path) =>
-		set(item, last(path.split(".")), get(object, path))
-	);
+    paths.forEach((path) =>
+        set(item, last(path.split('.')), get(object, path))
+    )
 
-	return item;
-};
+    return item
+}
 
 const flatPick = (object, paths) => {
-	if (isArray(object)) {
-		forEach(object, (item, key) => {
-			object[key] = pick(item, paths);
-		});
-	} else {
-		object = pick(object, paths);
-	}
+    if (isArray(object)) {
+        forEach(object, (item, key) => {
+            object[key] = pick(item, paths)
+        })
+    } else {
+        object = pick(object, paths)
+    }
 
-	return object;
-};
+    return object
+}
 
-export default flatPick;
+export default flatPick

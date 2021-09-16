@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose'
+const Schema = mongoose.Schema
 
 /**
  * Mongoose Schema
@@ -11,11 +11,11 @@ const postSchema = Schema(
             type: String,
             required: true,
         },
-        author: { type: Schema.Types.ObjectId, ref: "User" },
+        author: { type: Schema.Types.ObjectId, ref: 'User' },
     },
     {
         versionKey: false,
     }
-);
+)
 
-export default mongoose.model("Post", postSchema);
+export default mongoose.model('Post', postSchema)
