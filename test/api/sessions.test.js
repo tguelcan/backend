@@ -87,7 +87,7 @@ test.serial(`Create more sessions`, async (t) => {
 });
 
 // DELETE ONE 401
-test.only(`DELETE ${endpoint} | 401 | Delete one Entry`, async (t) => {
+test.serial(`DELETE ${endpoint} | 401 | Delete one Entry`, async (t) => {
   const {
     server,
     users: { user1, user2 },
