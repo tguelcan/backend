@@ -69,11 +69,11 @@ export default async function (app) {
 }
 /*
 preSerialization: async (request, reply, payload, done) => {
-			await payload.populate({
-				path: "author",
-				select: "displayName picture",
-			});
-			// return await app.flatPick(payload, ["_id", "author", "content"]);
-			return payload;
-		},
+            await payload.populate({
+                path: "author",
+                select: "displayName picture",
+            });
+            // return await app.flatPick(payload, ["_id", "author", "content"]);
+            return payload;
+        },
 */

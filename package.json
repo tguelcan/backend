@@ -2,10 +2,9 @@
   "name": "impftermin",
   "version": "1.0.0",
   "license": "MIT",
-  "main": "src/index.js",
   "private": true,
   "scripts": {
-    "start": "node .",
+    "start": "npm run prod",
     "test": "ava --verbose",
     "dev": "nodemon src/ --exec \"node --require dotenv/config --require @babel/register\"",
     "prod": "NODE_ENV=production babel-node --presets @babel/env src/",
