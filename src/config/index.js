@@ -5,7 +5,7 @@ import path from "path";
  * */
 const {
     PORT = 3000,
-    MONGO_URI = "mongodb+srv://root:Test123!@pluto.t8vde.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    MONGO_URI = "mongodb://localhost:27017/myproject",
     JWT_SECRET,
     NODE_ENV = "development",
 } = process.env;
@@ -33,7 +33,7 @@ const config = {
             },
         },
         jwt: {
-            secret: JWT_SECRET || "12345",
+            secret: JWT_SECRET,
             sign: {
                 expiresIn: "10080m", // one week in minutes
                 algorithm: "HS512",
