@@ -28,8 +28,8 @@ export default async function (app) {
                     offset: { type: 'number' },
                     totalPages: { type: 'number' },
                     page: { type: 'number' },
-                    prevPage: { type: 'number' },
-                    nextPage: { type: 'number' },
+                    prevPage: { type: 'number', nullable: true },
+                    nextPage: { type: 'number', nullable: true },
                 }
             }
         }
