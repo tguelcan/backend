@@ -1,11 +1,38 @@
 import { find, findOne, createOne, updateOne, deleteOne } from './controller'
 
+const returnPost = {
+    type: 'object',
+    properties: {
+        _id: { type: 'string' },
+        content: { type: 'string' },
+        author: {
+            _id: { type: 'string' },
+            displayName: { type: 'string' },
+            picture: { type: 'string' },
+        },
+    },
+}
+
 export default async function (app) {
     app.route({
         url: '/',
         method: ['GET'],
         preValidation: [app.authenticate(['user', 'admin'])],
         handler: find,
+        schema: {
+            description: 'Get all post objects',
+            response: {
+                200: {
+                    rows: { type: 'array', items: returnPost },
+                    totalDocs: { type: 'number' },
+                    offset: { type: 'number' },
+                    totalPages: { type: 'number' },
+                    page: { type: 'number' },
+                    prevPage: { type: 'number' },
+                    nextPage: { type: 'number' },
+                }
+            }
+        }
     })
 
     app.route({
@@ -19,9 +46,9 @@ export default async function (app) {
             app.pick(['_id', 'content', 'author']),
         ],
         schema: {
+            description: 'Post a new post object',
             body: {
                 type: 'object',
-                description: 'Post Object',
                 examples: [
                     {
                         name: 'Post Sample',
@@ -34,6 +61,9 @@ export default async function (app) {
                 },
                 required: ['content'],
             },
+            response: {
+                200: returnPost, /* Postman returns 200 but what about a 201 for example? Alt. = '2xx' or so */
+            }
         },
     })
 
@@ -47,6 +77,18 @@ export default async function (app) {
             app.populate(),
             app.pick(['_id', 'content', 'author']),
         ],
+        schema: {
+            description: 'Get one post object by id',
+            params: {
+                type: 'object',
+                properties: {
+                    id: { type: 'string', description: 'post id' }
+                }
+            },
+            response: {
+                200: returnPost,
+            }
+        }
     })
 
     app.route({
